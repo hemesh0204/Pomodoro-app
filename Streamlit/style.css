@@ -1,11 +1,19 @@
 body {
     color: #2E86C1;
     background-color: #D6EAF8;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 .stButton>button {
-    color: #666;
+    color: #fff;
+    background-color: #2E86C1;
     border-radius: 50%;
-    height: 12em;
-    width: 12em;
+    height: 4em;
+    width: 4em;
+    border: none;
+    font-size: 1.2em;
+}
+
+.stProgress > div > div > div {
+    background-color: #2ECC71;
 }
