@@ -1,46 +1,54 @@
 import streamlit as st
 import time
 
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+from pathlib import Path
+
+
+def local_css(file_name: str) -> None:
+    """Load local CSS file for custom styling."""
+    css_path = Path(__file__).with_name(file_name)
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 local_css("style.css")
 
-st.write("""
-#Pomodoro App - Web Version
+st.title("Pomodoro App - Web Version")
+st.write("Work in focused bursts with customisable breaks")
 
-Work for 25 mins burst cycles & 5 minutes Break
+work_minutes = st.number_input(
+    "Work duration (minutes)", min_value=1, max_value=60, value=25
+)
+break_minutes = st.number_input(
+    "Break duration (minutes)", min_value=1, max_value=30, value=5
+)
+cycles = st.number_input(
+    "Number of cycles", min_value=1, max_value=10, value=1
+)
 
-Created By Hemesh
-""")
-
-
-button_clicked = st.button("Start")
-
-t1 = 1500
-t2 = 300
-
-if button_clicked:
-    with st.empty():
-        while t1:
-            mins, secs = divmod(t1, 60)
-            timer = '{:02d}:{:02d}'.format(mins, secs)
-            st.header(f"⏳ {timer}")
+if st.button("Start"):
+    for cycle in range(int(cycles)):
+        st.subheader(f"\nCycle {cycle + 1} - Work")
+        work_seconds = int(work_minutes * 60)
+        progress = st.progress(0)
+        timer_placeholder = st.empty()
+        for remaining in range(work_seconds, 0, -1):
+            mins, secs = divmod(remaining, 60)
+            timer_placeholder.header(f"⏳ {mins:02d}:{secs:02d}")
+            progress.progress((work_seconds - remaining) / work_seconds)
             time.sleep(1)
-            t1 -= 1
-        st.success("🔔 25 minutes is over! Time for a break!")
+        st.success("🔔 Work session complete! Take a break!")
 
-
-
-    with st.empty():
-        while t2:
-            # Start the break
-            mins2, secs2 = divmod(t2, 60)
-            timer2 = '{:02d}:{:02d}'.format(mins2, secs2)
-            st.header(f"⏳ {timer2}")
+        st.subheader(f"Break {cycle + 1}")
+        break_seconds = int(break_minutes * 60)
+        progress = st.progress(0)
+        timer_placeholder = st.empty()
+        for remaining in range(break_seconds, 0, -1):
+            mins, secs = divmod(remaining, 60)
+            timer_placeholder.header(f"⏳ {mins:02d}:{secs:02d}")
+            progress.progress((break_seconds - remaining) / break_seconds)
             time.sleep(1)
-            t2 -= 1
-        st.success("⏰ 5 minute break is over!")
+        st.success("⏰ Break is over!")
+
+    st.balloons()
