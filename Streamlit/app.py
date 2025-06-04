@@ -9,7 +9,7 @@ def local_css(file_name: str) -> None:
     """Load local CSS file for custom styling."""
     css_path = Path(__file__).with_name(file_name)
     with open(css_path) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 
 
 local_css("style.css")
